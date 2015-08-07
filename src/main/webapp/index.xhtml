@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head id="head1">
+        <title>Dynamic JSF Page Includes</title>
+    </h:head>
+    <h:body id="body1">
+        <h1>An Example of how to use &lt;ui:include/&gt; dynamically in JSF</h1>
+        <p>
+            A lot of time has been spent trying to find out how to load a page dynamically in JSF. This is a very 
+            concrete and probably the simplest to implement. There are three links below. Clicking on the link sets 
+            a value in the <code>IndexBean</code> that indicates which page should be set. This is handled via AJAX. 
+            If you look at the Server logs, you will note that there are no log messages from the beans linked 
+            to the included pages. This is because the the <code>rendered</code> attribute is not set for the interior
+            <code>&lt;h:panelgroup/&gt;</code>. Once you click on the <strong>Render Include</strong> button, the
+            page will display and the logs will indicate that the constructor and <code>@PostConstruct</code> method were called.
+            The buttons are part of another bean called <code>BeanHelper</code> whose sole purpose is to determine if the
+            included page should be displayed. Since all of the beans are linked to the page, only after navigation are all
+            the beans destroyed.
+        </p>
+
+        <h:form id="form1">
+            <f:ajax id="ajax1" render=":form3:content">
+                <ul>
+                    <li><h:commandLink value="include1" action="#{indexBean.setInclude('include1')}" /></li>            
+                    <li><h:commandLink value="include2" action="#{indexBean.setInclude('include2')}" /></li>            
+                    <li><h:commandLink value="include3" action="#{indexBean.setInclude('include3')}" /></li>            
+                </ul>
+            </f:ajax>
+        </h:form>
+
+        <h:form id="form2">
+            <h:commandButton id="commandButton1" action="#{beanHelper.setShouldRender(true)}" value="Render Include">
+                <f:ajax id="ajax2" render=":form3:content"/>
+            </h:commandButton>
+            <h:commandButton id="commandButton2" action="#{beanHelper.setShouldRender(false)}" value="Do not render Include">
+                <f:ajax id="ajax3" render=":form3:content"/>
+            </h:commandButton>
+            <h:commandButton id="commandButton3" action="page2" value="Page 2"/>
+        </h:form>
+
+        <!-- THE FORM IS OUTSIDE OF PANEL GROUP -->
+        <h:form id="form3">   
+            <!-- THIS IS THE PANEL GROUP THAT WE USE TO LOAD OUR INCLUDED FILE SEE AJAX ABOVE -->
+            <h:panelGroup id="content" layout="block">
+                <!-- THIS CONTROLS IF THE PANEL SHOULD BE RENDERED -->
+                <h:panelGroup  id="renderPanelGroup" rendered="#{beanHelper.shouldRender}" layout="block">
+                    <!--<ui:include id="includedFile" src="/resources/templates/#-{indexBean.include}.xhtml" />-->
+                    <ui:include src="#{indexBean.include}"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:form>
+        <ui:debug hotkey="A"/>
+    </h:body>
+</html>
+
