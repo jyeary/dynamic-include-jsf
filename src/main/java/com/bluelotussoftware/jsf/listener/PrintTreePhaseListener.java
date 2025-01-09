@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 John Yeary <jyeary@bluelotussoftware.com>.
+ * Copyright 2015-2025 John Yeary <jyeary@bluelotussoftware.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import javax.faces.event.PhaseListener;
 /**
  *
  * @author John Yeary <jyeary@bluelotussoftware.com>
- * @version 1.0
+ * @version 1.0.1
  */
 public class PrintTreePhaseListener implements PhaseListener {
 
